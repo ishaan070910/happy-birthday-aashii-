@@ -10,10 +10,10 @@
         margin: 0;
         padding: 0;
         font-family: "Poppins", sans-serif;
-        overflow: hidden;
-        background: linear-gradient(135deg,#ff9ecd,#ffb3f6,#ffe3ff);
+        background: linear-gradient(135deg,#ff94d9,#ffc5f7,#ffe9ff);
         background-size: 400% 400%;
-        animation: gradient 8s ease infinite;
+        animation: gradient 10s ease infinite;
+        overflow: hidden;
         text-align: center;
     }
 
@@ -30,16 +30,25 @@
         transform: translate(-50%, -50%);
     }
 
+    .fade {
+        opacity: 0;
+        transition: opacity 2s ease;
+    }
+
+    .show {
+        opacity: 1;
+    }
+
     #startBtn {
         padding: 18px 35px;
-        border: none;
         border-radius: 40px;
+        border: none;
+        font-size: 22px;
         background: hotpink;
         color: white;
-        font-size: 22px;
         cursor: pointer;
-        box-shadow: 0 0 20px rgba(255,0,120,0.6);
-        animation: pulse 1.4s infinite;
+        animation: pulse 1.5s infinite;
+        box-shadow: 0 0 25px rgba(255,80,180,0.6);
     }
 
     @keyframes pulse {
@@ -48,48 +57,47 @@
         100% {transform: scale(1);}
     }
 
-    .hidden {display: none;}
-
-    /* Hearts floating */
+    /* Floating hearts */
     .heart {
         position: fixed;
         bottom: -10px;
         color: pink;
-        animation: floatUp 4s linear infinite;
+        animation: floatUp 6s linear infinite;
         font-size: 20px;
+        opacity: 0.7;
     }
 
     @keyframes floatUp {
         0% {transform: translateY(0);}
-        100% {transform: translateY(-120vh);}
+        100% {transform: translateY(-150vh);}
     }
 
-    /* Quiz Box */
-    #quizBox {
+    #messageBox {
+        font-size: 26px;
+        width: 80%;
+        margin: auto;
+        display: none;
+        color: white;
+        line-height: 1.5;
+    }
+
+    #gameBox {
+        display: none;
         background: white;
         padding: 30px;
         width: 80%;
-        max-width: 500px;
-        margin: auto;
+        max-width: 450px;
         border-radius: 20px;
-        box-shadow: 0 0 25px rgba(0,0,0,0.2);
-        display: none;
-    }
-
-    #surpriseBox {
-        font-size: 22px;
-        padding: 25px;
-        color: white;
-        line-height: 1.6;
-        display: none;
+        color: #ff4ea1;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        margin: auto;
     }
 
     #finalMsg {
         display: none;
-        font-size: 30px;
         color: white;
-        font-weight: bold;
-        animation: glow 1.5s infinite;
+        font-size: 32px;
+        animation: glow 2s infinite;
     }
 
     @keyframes glow {
@@ -97,132 +105,113 @@
         50% {text-shadow: 0 0 25px deeppink;}
         100% {text-shadow: 0 0 10px pink;}
     }
-
 </style>
 </head>
 
 <body>
 
-<div id="intro" class="center">
-    <h1 style="color:white; font-size:40px;">🎀 Happy Birthday Aashi 🎀</h1>
-    <p style="color:white; font-size:20px;">A little surprise just for you...</p>
+<!-- Intro -->
+<div id="intro" class="center fade">
+    <h1 style="font-size:40px; color:white;">🎀 Happy Birthday Aashi 🎀</h1>
+    <p style="color:white; font-size:20px;">There’s a small journey waiting for you...</p>
     <button id="startBtn">Tap to Begin 🎉</button>
 </div>
 
-<div id="nameReveal" class="center hidden">
-    <h1 style="color:white; font-size:55px;">💖 Aashi 💖</h1>
-    <p style="color:white;">You're the reason today feels special✨</p>
+<!-- Name Reveal -->
+<div id="nameReveal" class="center fade" style="display:none;">
+    <h1 style="font-size:60px; color:white;">💖 Aashi 💖</h1>
+    <p style="color:white; font-size:20px;">Today is your day... let it sparkle ✨</p>
 </div>
 
-<div id="quizBox">
-    <h2>🎀 Mini Quiz for Birthday Girl 🎀</h2>
-    <p id="question"></p>
-    <button class="qBtn" onclick="checkAnswer(0)"></button><br><br>
-    <button class="qBtn" onclick="checkAnswer(1)"></button><br><br>
-    <button class="qBtn" onclick="checkAnswer(2)"></button>
+<!-- Timed Messages -->
+<div id="messageBox" class="center fade"></div>
+
+<!-- Mini Interaction -->
+<div id="gameBox" class="fade center">
+    <h2>🎀 Choose Your Birthday Vibe 🎀</h2>
+    <button onclick="choose('Cute Pink & Aesthetic 🎀')">Cute Pink</button><br><br>
+    <button onclick="choose('Soft, Calm & Cozy ✨')">Soft Cozy</button><br><br>
+    <button onclick="choose('Joyful, Loud & Fun 🎉')">Party Fun</button>
 </div>
 
-<div id="surpriseBox" class="center">
-    🎁 Dear Aashi,<br><br>
-    You bring joy, laughter, and warmth to every moment.  
-    Today is all about YOU — the sweetest, kindest, cutest soul.  
-    May your dreams sparkle as bright as your smile.  
-    You deserve all the love and happiness in the world. 💖<br><br>
+<!-- Final Message -->
+<div id="finalMsg" class="center fade">
+    🎉 HAPPY BIRTHDAY AASHI 🎉<br>
+    💗 You are truly special 💗<br>
     — From Ishaan ✨
 </div>
 
-<div id="finalMsg" class="center">
-    🎉 HAPPY BIRTHDAY AASHI 🎉  
-    💖 You are truly special 💖
-</div>
-
 <script>
-// Floating Hearts Generator
-function createHeart() {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💗";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (20 + Math.random() * 20) + "px";
-    document.body.appendChild(heart);
+// Floating hearts generator
+setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💗";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = 15 + Math.random() * 30 + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 6000);
+}, 300);
 
-    setTimeout(() => heart.remove(), 4000);
-}
-setInterval(createHeart, 300);
+document.getElementById("startBtn").onclick = () => {
+    intro.style.display = "none";
+    nameReveal.style.display = "block";
+    setTimeout(() => nameReveal.classList.add("show"), 100);
 
-// Start Button → Name Reveal
-document.getElementById("startBtn").onclick = function () {
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("nameReveal").classList.remove("hidden");
-
-    setTimeout(() => {
-        document.getElementById("nameReveal").style.display = "none";
-        startQuiz();
-    }, 3000);
+    // Name reveal stays for 10 seconds
+    setTimeout(showMessages, 10000);
 };
 
-// Quiz Section
-const questions = [
-    {
-        q: "Aashi's favourite vibe?",
-        options: ["Cute & Pink 🎀", "Adventure 🌍", "Sleep 😴"],
-        correct: 0
-    },
-    {
-        q: "Aashi is…?",
-        options: ["Sweet 💗", "Funny 😂", "Both 😉"],
-        correct: 2
-    },
-    {
-        q: "What does Ishaan wish for her?",
-        options: ["Success ✨", "Happiness 💖", "Everything she dreams of 🌟"],
-        correct: 2
-    }
+// Timed messages (45–60 secs)
+const msgs = [
+    "Aashi, this moment is just for you...",
+    "A moment to smile, breathe, and feel loved 💗",
+    "Because today, the world feels a little brighter...",
+    "A little softer...",
+    "And a lot more magical — because it’s your birthday ✨",
+    "You bring joy in ways you don’t even realise...",
+    "And the people who know you… know how special you are 🌸",
+    "Now, something fun before your surprise…"
 ];
 
-let qIndex = 0;
+let i = 0;
 
-function startQuiz() {
-    document.getElementById("quizBox").style.display = "block";
-    loadQuestion();
-}
+function showMessages() {
+    nameReveal.style.display = "none";
 
-function loadQuestion() {
-    const q = questions[qIndex];
-    document.getElementById("question").innerText = q.q;
-
-    const btns = document.getElementsByClassName("qBtn");
-    btns[0].innerText = q.options[0];
-    btns[1].innerText = q.options[1];
-    btns[2].innerText = q.options[2];
-}
-
-function checkAnswer(i) {
-    qIndex++;
-    if (qIndex < questions.length) {
-        loadQuestion();
-    } else {
-        document.getElementById("quizBox").style.display = "none";
-        showSurprise();
+    const box = document.getElementById("messageBox");
+    box.style.display = "block";
+    
+    function next() {
+        if (i < msgs.length) {
+            box.innerHTML = msgs[i];
+            box.classList.add("show");
+            i++;
+            setTimeout(next, 4500); // 4.5 sec per msg → around 40 seconds
+        } else {
+            box.style.display = "none";
+            showGame();
+        }
     }
+    next();
 }
 
-// Surprise Message
-function showSurprise() {
-    document.getElementById("surpriseBox").style.display = "block";
-
-    setTimeout(() => {
-        document.getElementById("surpriseBox").style.display = "none";
-        document.getElementById("finalMsg").style.display = "block";
-        confettiBurst();
-    }, 4000);
+// Mini game (30 sec feel)
+function showGame() {
+    gameBox.style.display = "block";
+    setTimeout(() => gameBox.classList.add("show"), 100);
 }
 
-// Simple confetti
-function confettiBurst() {
-    for (let i = 0; i < 50; i++) {
-        setTimeout(createHeart, i * 100);
-    }
+function choose(vibe) {
+    gameBox.innerHTML = "<h2>Perfect choice 💖</h2><p>Your vibe: " + vibe + "</p>";
+    setTimeout(showFinal, 3000);
+}
+
+// Final reveal (slow build)
+function showFinal() {
+    gameBox.style.display = "none";
+    finalMsg.style.display = "block";
+    setTimeout(() => finalMsg.classList.add("show"), 200);
 }
 </script>
 
