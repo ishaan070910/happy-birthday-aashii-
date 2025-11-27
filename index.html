@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -33,6 +32,7 @@
     position: fixed;
     width: 10px;
     height: 10px;
+    background-color: #ffcc00;
     animation: fall 3s linear infinite;
   }
   @keyframes fall {
@@ -43,24 +43,15 @@
     width: 50px; height: 50px; display: inline-block; margin: 10px; cursor: pointer;
     background: url('https://i.ibb.co/fMTF5pH/heart.png') no-repeat center/contain;
   }
-  .gift {
-    width: 70px; height: 70px; display: inline-block; margin: 10px; cursor: grab;
-    background: url('https://i.ibb.co/0J2tLqK/gift.png') no-repeat center/contain;
-  }
-  #basket {
-    width: 150px; height: 100px; margin: 20px auto; background-color: #ffccff;
-    border-radius: 15px; line-height: 100px; font-weight: bold;
-    color: #fff; font-size: 18px; position: relative;
-  }
 </style>
 </head>
 <body>
 
-<h1 id="intro">Hey Aashi! 🎉 A special surprise awaits!</h1>
-<button id="startBtn">Start Surprise</button>
+<h1 id="intro">Hey Aashi! 🎉 I have a surprise for you!</h1>
+<button id="startBtn">Start the Surprise</button>
 
 <div id="story" class="hidden">
-  <h2>Pick a gift heart!</h2>
+  <h2>Pick a gift to reveal your surprise!</h2>
   <div class="heart" onclick="revealMessage('You got a cute puppy GIF! 🐶')"></div>
   <div class="heart" onclick="revealMessage('You got a colorful balloon animation! 🎈')"></div>
   <div class="heart" onclick="revealMessage('You got a sweet cake image! 🍰')"></div>
@@ -69,14 +60,6 @@
 <div id="message" class="hidden">
   <h2 id="msgText"></h2>
   <button id="nextBtn">Next</button>
-</div>
-
-<div id="dragDrop" class="hidden">
-  <h2>Drag the gifts into the basket!</h2>
-  <div class="gift" draggable="true" id="gift1"></div>
-  <div class="gift" draggable="true" id="gift2"></div>
-  <div class="gift" draggable="true" id="gift3"></div>
-  <div id="basket">Drop here 🎁</div>
 </div>
 
 <div id="quiz" class="hidden">
@@ -91,64 +74,33 @@
   <h2>Hope your day is filled with joy, laughter & love!</h2>
 </div>
 
-<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio> <audio id="confettiSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3"></audio>
-
 <script>
   const startBtn = document.getElementById('startBtn');
   const story = document.getElementById('story');
   const messageDiv = document.getElementById('message');
   const msgText = document.getElementById('msgText');
   const nextBtn = document.getElementById('nextBtn');
-  const dragDrop = document.getElementById('dragDrop');
   const quiz = document.getElementById('quiz');
   const final = document.getElementById('final');
-  const clickSound = document.getElementById('clickSound');
-  const confettiSound = document.getElementById('confettiSound');
 
   startBtn.onclick = () => {
-    clickSound.play();
     startBtn.style.display = 'none';
     story.classList.remove('hidden');
-    createConfetti(50);
-    confettiSound.play();
+    createConfetti(30);
   }
 
   function revealMessage(text) {
-    clickSound.play();
     story.classList.add('hidden');
     messageDiv.classList.remove('hidden');
     msgText.innerText = text;
   }
 
   nextBtn.onclick = () => {
-    clickSound.play();
     messageDiv.classList.add('hidden');
-    dragDrop.classList.remove('hidden');
+    quiz.classList.remove('hidden');
   }
 
-  // Drag and drop
-  const gifts = document.querySelectorAll('.gift');
-  const basket = document.getElementById('basket');
-  gifts.forEach(gift => {
-    gift.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text', e.target.id);
-    });
-  });
-
-  basket.addEventListener('dragover', (e) => e.preventDefault());
-  basket.addEventListener('drop', (e) => {
-    e.preventDefault();
-    const id = e.dataTransfer.getData('text');
-    const gift = document.getElementById(id);
-    gift.style.display = 'none';
-    if([...gifts].every(g => g.style.display === 'none')) {
-      dragDrop.classList.add('hidden');
-      quiz.classList.remove('hidden');
-    }
-  });
-
   function checkAnswer(correct) {
-    clickSound.play();
     quiz.classList.add('hidden');
     final.classList.remove('hidden');
     if(correct) {
