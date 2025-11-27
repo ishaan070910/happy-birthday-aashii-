@@ -1,218 +1,172 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday Aashi 🎀</title>
-
+<title>Birthday Surprise for Aashi</title>
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg,#ff94d9,#ffc5f7,#ffe9ff);
-        background-size: 400% 400%;
-        animation: gradient 10s ease infinite;
-        overflow: hidden;
-        text-align: center;
-    }
-
-    @keyframes gradient {
-        0% {background-position: 0% 0%;}
-        50% {background-position: 100% 100%;}
-        100% {background-position: 0% 0%;}
-    }
-
-    .center {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .fade {
-        opacity: 0;
-        transition: opacity 2s ease;
-    }
-
-    .show {
-        opacity: 1;
-    }
-
-    #startBtn {
-        padding: 18px 35px;
-        border-radius: 40px;
-        border: none;
-        font-size: 22px;
-        background: hotpink;
-        color: white;
-        cursor: pointer;
-        animation: pulse 1.5s infinite;
-        box-shadow: 0 0 25px rgba(255,80,180,0.6);
-    }
-
-    @keyframes pulse {
-        0% {transform: scale(1);}
-        50% {transform: scale(1.1);}
-        100% {transform: scale(1);}
-    }
-
-    /* Floating hearts */
-    .heart {
-        position: fixed;
-        bottom: -10px;
-        color: pink;
-        animation: floatUp 6s linear infinite;
-        font-size: 20px;
-        opacity: 0.7;
-    }
-
-    @keyframes floatUp {
-        0% {transform: translateY(0);}
-        100% {transform: translateY(-150vh);}
-    }
-
-    #messageBox {
-        font-size: 26px;
-        width: 80%;
-        margin: auto;
-        display: none;
-        color: white;
-        line-height: 1.5;
-    }
-
-    #gameBox {
-        display: none;
-        background: white;
-        padding: 30px;
-        width: 80%;
-        max-width: 450px;
-        border-radius: 20px;
-        color: #ff4ea1;
-        box-shadow: 0 0 20px rgba(0,0,0,0.2);
-        margin: auto;
-    }
-
-    #finalMsg {
-        display: none;
-        color: white;
-        font-size: 32px;
-        animation: glow 2s infinite;
-    }
-
-    @keyframes glow {
-        0% {text-shadow: 0 0 10px pink;}
-        50% {text-shadow: 0 0 25px deeppink;}
-        100% {text-shadow: 0 0 10px pink;}
-    }
+  body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(to bottom, #ffd1dc, #ffe0ac);
+    text-align: center;
+    overflow-x: hidden;
+  }
+  h1, h2 {
+    color: #ff3366;
+    margin-top: 20px;
+  }
+  .hidden { display: none; }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background-color: #ff99cc;
+    color: white;
+    transition: transform 0.2s;
+  }
+  button:hover { transform: scale(1.1); }
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    animation: fall 3s linear infinite;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-50px) rotate(0deg); }
+    100% { transform: translateY(100vh) rotate(360deg); }
+  }
+  .heart {
+    width: 50px; height: 50px; display: inline-block; margin: 10px; cursor: pointer;
+    background: url('https://i.ibb.co/fMTF5pH/heart.png') no-repeat center/contain;
+  }
+  .gift {
+    width: 70px; height: 70px; display: inline-block; margin: 10px; cursor: grab;
+    background: url('https://i.ibb.co/0J2tLqK/gift.png') no-repeat center/contain;
+  }
+  #basket {
+    width: 150px; height: 100px; margin: 20px auto; background-color: #ffccff;
+    border-radius: 15px; line-height: 100px; font-weight: bold;
+    color: #fff; font-size: 18px; position: relative;
+  }
 </style>
 </head>
-
 <body>
 
-<!-- Intro -->
-<div id="intro" class="center fade">
-    <h1 style="font-size:40px; color:white;">🎀 Happy Birthday Aashi 🎀</h1>
-    <p style="color:white; font-size:20px;">There’s a small journey waiting for you...</p>
-    <button id="startBtn">Tap to Begin 🎉</button>
+<h1 id="intro">Hey Aashi! 🎉 A special surprise awaits!</h1>
+<button id="startBtn">Start Surprise</button>
+
+<div id="story" class="hidden">
+  <h2>Pick a gift heart!</h2>
+  <div class="heart" onclick="revealMessage('You got a cute puppy GIF! 🐶')"></div>
+  <div class="heart" onclick="revealMessage('You got a colorful balloon animation! 🎈')"></div>
+  <div class="heart" onclick="revealMessage('You got a sweet cake image! 🍰')"></div>
 </div>
 
-<!-- Name Reveal -->
-<div id="nameReveal" class="center fade" style="display:none;">
-    <h1 style="font-size:60px; color:white;">💖 Aashi 💖</h1>
-    <p style="color:white; font-size:20px;">Today is your day... let it sparkle ✨</p>
+<div id="message" class="hidden">
+  <h2 id="msgText"></h2>
+  <button id="nextBtn">Next</button>
 </div>
 
-<!-- Timed Messages -->
-<div id="messageBox" class="center fade"></div>
-
-<!-- Mini Interaction -->
-<div id="gameBox" class="fade center">
-    <h2>🎀 Choose Your Birthday Vibe 🎀</h2>
-    <button onclick="choose('Cute Pink & Aesthetic 🎀')">Cute Pink</button><br><br>
-    <button onclick="choose('Soft, Calm & Cozy ✨')">Soft Cozy</button><br><br>
-    <button onclick="choose('Joyful, Loud & Fun 🎉')">Party Fun</button>
+<div id="dragDrop" class="hidden">
+  <h2>Drag the gifts into the basket!</h2>
+  <div class="gift" draggable="true" id="gift1"></div>
+  <div class="gift" draggable="true" id="gift2"></div>
+  <div class="gift" draggable="true" id="gift3"></div>
+  <div id="basket">Drop here 🎁</div>
 </div>
 
-<!-- Final Message -->
-<div id="finalMsg" class="center fade">
-    🎉 HAPPY BIRTHDAY AASHI 🎉<br>
-    💗 You are truly special 💗<br>
-    — From Ishaan ✨
+<div id="quiz" class="hidden">
+  <h2>Guess the emoji: 🎂🍫🍬</h2>
+  <button onclick="checkAnswer(true)">Cake</button>
+  <button onclick="checkAnswer(false)">Apple</button>
+  <button onclick="checkAnswer(false)">Banana</button>
 </div>
+
+<div id="final" class="hidden">
+  <h1>🎆 Happy Birthday, Aashi! 🎆</h1>
+  <h2>Hope your day is filled with joy, laughter & love!</h2>
+</div>
+
+<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio> <audio id="confettiSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3"></audio>
 
 <script>
-// Floating hearts generator
-setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.innerHTML = "💗";
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.fontSize = 15 + Math.random() * 30 + "px";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 6000);
-}, 300);
+  const startBtn = document.getElementById('startBtn');
+  const story = document.getElementById('story');
+  const messageDiv = document.getElementById('message');
+  const msgText = document.getElementById('msgText');
+  const nextBtn = document.getElementById('nextBtn');
+  const dragDrop = document.getElementById('dragDrop');
+  const quiz = document.getElementById('quiz');
+  const final = document.getElementById('final');
+  const clickSound = document.getElementById('clickSound');
+  const confettiSound = document.getElementById('confettiSound');
 
-document.getElementById("startBtn").onclick = () => {
-    intro.style.display = "none";
-    nameReveal.style.display = "block";
-    setTimeout(() => nameReveal.classList.add("show"), 100);
+  startBtn.onclick = () => {
+    clickSound.play();
+    startBtn.style.display = 'none';
+    story.classList.remove('hidden');
+    createConfetti(50);
+    confettiSound.play();
+  }
 
-    // Name reveal stays for 10 seconds
-    setTimeout(showMessages, 10000);
-};
+  function revealMessage(text) {
+    clickSound.play();
+    story.classList.add('hidden');
+    messageDiv.classList.remove('hidden');
+    msgText.innerText = text;
+  }
 
-// Timed messages (45–60 secs)
-const msgs = [
-    "Aashi, this moment is just for you...",
-    "A moment to smile, breathe, and feel loved 💗",
-    "Because today, the world feels a little brighter...",
-    "A little softer...",
-    "And a lot more magical — because it’s your birthday ✨",
-    "You bring joy in ways you don’t even realise...",
-    "And the people who know you… know how special you are 🌸",
-    "Now, something fun before your surprise…"
-];
+  nextBtn.onclick = () => {
+    clickSound.play();
+    messageDiv.classList.add('hidden');
+    dragDrop.classList.remove('hidden');
+  }
 
-let i = 0;
+  // Drag and drop
+  const gifts = document.querySelectorAll('.gift');
+  const basket = document.getElementById('basket');
+  gifts.forEach(gift => {
+    gift.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text', e.target.id);
+    });
+  });
 
-function showMessages() {
-    nameReveal.style.display = "none";
-
-    const box = document.getElementById("messageBox");
-    box.style.display = "block";
-    
-    function next() {
-        if (i < msgs.length) {
-            box.innerHTML = msgs[i];
-            box.classList.add("show");
-            i++;
-            setTimeout(next, 4500); // 4.5 sec per msg → around 40 seconds
-        } else {
-            box.style.display = "none";
-            showGame();
-        }
+  basket.addEventListener('dragover', (e) => e.preventDefault());
+  basket.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData('text');
+    const gift = document.getElementById(id);
+    gift.style.display = 'none';
+    if([...gifts].every(g => g.style.display === 'none')) {
+      dragDrop.classList.add('hidden');
+      quiz.classList.remove('hidden');
     }
-    next();
-}
+  });
 
-// Mini game (30 sec feel)
-function showGame() {
-    gameBox.style.display = "block";
-    setTimeout(() => gameBox.classList.add("show"), 100);
-}
+  function checkAnswer(correct) {
+    clickSound.play();
+    quiz.classList.add('hidden');
+    final.classList.remove('hidden');
+    if(correct) {
+      final.innerHTML += "<p>You guessed it right! 🎉</p>";
+    } else {
+      final.innerHTML += "<p>Oops! But still a sweet surprise! 💖</p>";
+    }
+  }
 
-function choose(vibe) {
-    gameBox.innerHTML = "<h2>Perfect choice 💖</h2><p>Your vibe: " + vibe + "</p>";
-    setTimeout(showFinal, 3000);
-}
-
-// Final reveal (slow build)
-function showFinal() {
-    gameBox.style.display = "none";
-    finalMsg.style.display = "block";
-    setTimeout(() => finalMsg.classList.add("show"), 200);
-}
+  function createConfetti(count){
+    for(let i=0;i<count;i++){
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left = Math.random() * window.innerWidth + 'px';
+      confetti.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
+      document.body.appendChild(confetti);
+    }
+  }
 </script>
 
 </body>
