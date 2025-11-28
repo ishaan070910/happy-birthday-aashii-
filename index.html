@@ -1,124 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Birthday Surprise for Aashi</title>
-<style>
-  body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    background: linear-gradient(to bottom, #ffd1dc, #ffe0ac);
-    text-align: center;
-    overflow-x: hidden;
-  }
-  h1, h2 {
-    color: #ff3366;
-    margin-top: 20px;
-  }
-  .hidden { display: none; }
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    background-color: #ff99cc;
-    color: white;
-    transition: transform 0.2s;
-  }
-  button:hover { transform: scale(1.1); }
-  .confetti {
-    position: fixed;
-    width: 10px;
-    height: 10px;
-    background-color: #ffcc00;
-    animation: fall 3s linear infinite;
-  }
-  @keyframes fall {
-    0% { transform: translateY(-50px) rotate(0deg); }
-    100% { transform: translateY(100vh) rotate(360deg); }
-  }
-  .heart {
-    width: 50px; height: 50px; display: inline-block; margin: 10px; cursor: pointer;
-    background: url('https://i.ibb.co/fMTF5pH/heart.png') no-repeat center/contain;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Aashi!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #ffb6e6;
+      overflow-x: hidden;
+      text-align: center;
+    }
+    #intro {
+      padding-top: 120px;
+      font-size: 2rem;
+      color: #4a004e;
+      animation: fadeIn 2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .button {
+      background: #ff2fa4;
+      padding: 15px 30px;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+    .button:hover {
+      background: #d80079;
+    }
+    #game, #quiz, #finalMessage {
+      display: none;
+      margin-top: 50px;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    .gift {
+      width: 100px;
+      margin: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .gift:hover { transform: scale(1.1); }
+    #collected {
+      font-size: 1.4rem;
+      color: #5a005a;
+      margin-top: 20px;
+    }
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
 
-<h1 id="intro">Hey Aashi! 🎉 I have a surprise for you!</h1>
-<button id="startBtn">Start the Surprise</button>
+<canvas id="confettiCanvas"></canvas>
 
-<div id="story" class="hidden">
-  <h2>Pick a gift to reveal your surprise!</h2>
-  <div class="heart" onclick="revealMessage('You got a cute puppy GIF! 🐶')"></div>
-  <div class="heart" onclick="revealMessage('You got a colorful balloon animation! 🎈')"></div>
-  <div class="heart" onclick="revealMessage('You got a sweet cake image! 🍰')"></div>
+<div id="intro">
+  🎉 Hey Aashi! I have a special birthday surprise for you! 🎉<br><br>
+  <button class="button" onclick="startInteraction()">Start</button>
 </div>
 
-<div id="message" class="hidden">
-  <h2 id="msgText"></h2>
-  <button id="nextBtn">Next</button>
+<div id="game">
+  <h2>Collect all 3 gifts to continue!</h2>
+  <img src="https://i.imgur.com/5cX1ZyN.png" class="gift" onclick="collectGift(this)">
+  <img src="https://i.imgur.com/3tZp8WX.png" class="gift" onclick="collectGift(this)">
+  <img src="https://i.imgur.com/k7nU7xF.png" class="gift" onclick="collectGift(this)">
+  <div id="collected">Collected: 0 / 3</div>
 </div>
 
-<div id="quiz" class="hidden">
-  <h2>Guess the emoji: 🎂🍫🍬</h2>
-  <button onclick="checkAnswer(true)">Cake</button>
-  <button onclick="checkAnswer(false)">Apple</button>
-  <button onclick="checkAnswer(false)">Banana</button>
+<div id="quiz">
+  <h2>Quick Quiz for You, Aashi! 💖</h2>
+  <p>What do you think Ishaan wishes for you today?</p>
+  <button class="button" onclick="finish('Happiness! 💕')">Happiness</button>
+  <button class="button" onclick="finish('Success! 🌟')">Success</button>
+  <button class="button" onclick="finish('Everything amazing! 🎀')">Everything amazing</button>
 </div>
 
-<div id="final" class="hidden">
-  <h1>🎆 Happy Birthday, Aashi! 🎆</h1>
-  <h2>Hope your day is filled with joy, laughter & love!</h2>
-</div>
+<div id="finalMessage"></div>
 
 <script>
-  const startBtn = document.getElementById('startBtn');
-  const story = document.getElementById('story');
-  const messageDiv = document.getElementById('message');
-  const msgText = document.getElementById('msgText');
-  const nextBtn = document.getElementById('nextBtn');
-  const quiz = document.getElementById('quiz');
-  const final = document.getElementById('final');
+let collected = 0;
 
-  startBtn.onclick = () => {
-    startBtn.style.display = 'none';
-    story.classList.remove('hidden');
-    createConfetti(30);
-  }
+function startInteraction() {
+  document.getElementById("intro").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  startConfetti();
+}
 
-  function revealMessage(text) {
-    story.classList.add('hidden');
-    messageDiv.classList.remove('hidden');
-    msgText.innerText = text;
+function collectGift(el) {
+  el.style.display = "none";
+  collected++;
+  document.getElementById("collected").innerText = `Collected: ${collected} / 3`;
+  if (collected === 3) {
+    setTimeout(() => {
+      document.getElementById("game").style.display = "none";
+      document.getElementById("quiz").style.display = "block";
+    }, 700);
   }
+}
 
-  nextBtn.onclick = () => {
-    messageDiv.classList.add('hidden');
-    quiz.classList.remove('hidden');
-  }
+function finish(answer) {
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("finalMessage").innerHTML = `
+    <h1>🎉 Happy Birthday Aashi! 🎉</h1>
+    <p style='font-size:1.5rem;'>Ishaan wishes you: <b>${answer}</b></p>
+    <p style='font-size:1.3rem;'>You're special, amazing, and deserve the world! 💗</p>
+  `;
+}
 
-  function checkAnswer(correct) {
-    quiz.classList.add('hidden');
-    final.classList.remove('hidden');
-    if(correct) {
-      final.innerHTML += "<p>You guessed it right! 🎉</p>";
-    } else {
-      final.innerHTML += "<p>Oops! But still a sweet surprise! 💖</p>";
-    }
-  }
+// Confetti animation
+let confettiCanvas = document.getElementById("confettiCanvas");
+let ctx = confettiCanvas.getContext("2d");
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
 
-  function createConfetti(count){
-    for(let i=0;i<count;i++){
-      const confetti = document.createElement('div');
-      confetti.classList.add('confetti');
-      confetti.style.left = Math.random() * window.innerWidth + 'px';
-      confetti.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
-      document.body.appendChild(confetti);
-    }
+let confettiPieces = [];
+
+function randomColor() {
+  return `hsl(${Math.random() * 360}, 100%, 70%)`;
+}
+
+function createConfetti() {
+  for (let i = 0; i < 150; i++) {
+    confettiPieces.push({
+      x: Math.random() * confettiCanvas.width,
+      y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+      size: Math.random() * 7 + 3,
+      color: randomColor(),
+      speed: Math.random() * 3 + 1
+    });
   }
+}
+
+function updateConfetti() {
+  ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  confettiPieces.forEach(p => {
+    p.y += p.speed;
+    if (p.y > confettiCanvas.height) p.y = -10;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x, p.y, p.size, p.size);
+  });
+  requestAnimationFrame(updateConfetti);
+}
+
+function startConfetti() {
+  createConfetti();
+  updateConfetti();
+}
 </script>
 
 </body>
