@@ -1,413 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday Aashi 🎀</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Aashi</title>
+
   <style>
-    :root{
-      --bg-1:#fff0f6;
-      --pink-1:#ffb6e6;
-      --pink-2:#ff8ac9;
-      --accent:#ff4fa3;
-      --muted:#6a0040;
-      --card:#ffffff;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: "Poppins", system-ui, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, #fff6fb 0%, #ffeef9 100%);
-      color:var(--muted);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:28px;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7e8ff;
+      overflow: hidden;
     }
 
-    /* Layout */
-    .stage {
-      width:100%;
-      max-width:900px;
-      min-height:560px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,240,250,0.95));
-      border-radius:20px;
-      box-shadow:0 20px 60px rgba(255,80,170,0.12);
-      overflow:hidden;
-      position:relative;
-      padding:30px;
+    /* Floating hearts + sparkles (A3 aesthetic) */
+    .floating {
+      position: fixed;
+      top: 100vh;
+      font-size: 22px;
+      opacity: 0.8;
+      animation: floatUp 6s linear infinite;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    .screen { display:none; width:100%; height:100%; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:18px; }
-    .screen.active { display:flex; }
-
-    /* Title area */
-    .title {
-      font-size:20px;
-      font-weight:700;
-      color:var(--accent);
-      margin-bottom:8px;
-      letter-spacing:0.2px;
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.9;
+      }
+      50% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1.4);
+        opacity: 0;
+      }
     }
-    .subtitle { font-size:13px; color:#9b3a66; margin-bottom:18px; }
 
-    /* PIN keypad */
-    .pin-wrap { display:flex; flex-direction:column; align-items:center; gap:18px; }
-    .pin-display {
-      width:210px; height:46px; border-radius:12px; background:#ffd9ec;
-      display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--accent); letter-spacing:8px;
-      box-shadow: inset 0 -6px 14px rgba(255,100,170,0.06);
+    /* Screens */
+    .screen {
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      z-index: 5;
     }
+
+    .active {
+      display: flex;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: #c679ff;
+      color: white;
+      border: none;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .chapter-box {
+      max-width: 800px;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      z-index: 10;
+      position: relative;
+    }
+
+    h1 { color: #a246ff; }
+    h2 { color: #bb60ff; }
+    p { font-size: 18px; line-height: 1.6; }
+
+    /* PIN keypad styling */
     .pin-grid {
-      margin-top:6px;
-      width:100%;
-      display:grid;
-      grid-template-columns:repeat(3,80px);
-      grid-auto-rows:80px;
-      gap:12px;
-      justify-content:center;
+      display: grid;
+      grid-template-columns: repeat(3, 70px);
+      gap: 10px;
+      margin-top: 20px;
     }
+
     .pin-btn {
-      border-radius:22px;
-      border:none;
-      cursor:pointer;
-      font-weight:700;
-      font-size:22px;
-      box-shadow:0 8px 20px rgba(255,80,150,0.08);
-      transition:transform .12s ease, box-shadow .12s;
-      color:white;
-    }
-    .pin-btn:active{ transform:scale(.96) }
-
-    .pin-num { background: linear-gradient(180deg,var(--pink-1),var(--pink-2)); }
-    .pin-symbol { background: linear-gradient(180deg,#ffd6ea,#ffeff8); color: var(--accent); font-size:22px; }
-
-    /* chapter card */
-    .chapter-card {
-      width:100%;
-      max-width:760px;
-      background:var(--card);
-      padding:26px;
-      border-radius:16px;
-      box-shadow:0 18px 40px rgba(255,80,170,0.06);
-      text-align:left;
-    }
-    .chapter-card h2{ margin:0 0 10px 0; color:var(--accent); font-size:22px }
-    .chapter-card p{ margin:0; line-height:1.6; font-size:16px; color:#3a0029; white-space:pre-line }
-
-    .controls { margin-top:18px; display:flex; gap:12px; justify-content:center; }
-    .btn { background:var(--accent); color:white; border:none; padding:10px 16px; border-radius:12px; cursor:pointer; font-weight:700; }
-    .muted-btn { background:#fff; border: 1px solid #ffd3ea; color:var(--accent); }
-
-    /* final screen */
-    .final {
-      display:flex; flex-direction:column; align-items:center; gap:14px;
-    }
-    .confetti{
-      position:absolute; inset:0; pointer-events:none;
+      width: 70px;
+      height: 70px;
+      border-radius: 15px;
+      background: #ffb3ec;
+      color: #fff;
+      font-size: 26px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    /* responsiveness */
-    @media (max-width:520px){
-      .pin-grid{ grid-template-columns:repeat(3,64px); grid-auto-rows:64px; gap:10px;}
-      .pin-btn{ border-radius:18px; font-size:20px }
-      .pin-display{ width:160px; letter-spacing:6px }
-      .stage{ padding:18px }
-      .chapter-card{ padding:18px }
+    #typedPin {
+      letter-spacing: 10px;
+      font-size: 32px;
+      margin-top: 15px;
+      height: 40px;
     }
   </style>
 </head>
+
 <body>
-  <div class="stage" role="main">
 
-    <!-- SCREEN 1: PIN keypad -->
-    <section id="screen1" class="screen active" aria-label="Enter password screen">
-      <div class="title">Enter Password</div>
-      <div class="subtitle">This little surprise is just for Aashi — enter password to continue</div>
+  <!-- Floating hearts & sparkles generator -->
+  <script>
+    const symbols = ["💗","✨","💞","⭐","❣️","💖"];
+    function createFloating() {
+      const el = document.createElement("div");
+      el.classList.add("floating");
+      el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.animationDuration = 4 + Math.random() * 4 + "s";
+      el.style.fontSize = (18 + Math.random() * 20) + "px";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 6000);
+    }
+    setInterval(createFloating, 400);
+  </script>
 
-      <div class="pin-wrap" role="group" aria-label="pin keypad">
-        <div id="pinDisplay" class="pin-display" aria-live="polite" aria-atomic="true"></div>
+  <!-- Screen 1: PIN -->
+  <div id="screen1" class="screen active">
+    <h1>Enter Password 💗</h1>
+    <div id="typedPin"></div>
 
-        <div class="pin-grid" id="pinGrid">
-          <!-- top symbols -->
-          <button class="pin-btn pin-symbol" aria-hidden="true">☆</button>
-          <button class="pin-btn pin-symbol" aria-hidden="true">♡</button>
-          <button class="pin-btn pin-symbol" aria-hidden="true">✿</button>
+    <div class="pin-grid">
+      <button class="pin-btn" onclick="press(1)">1</button>
+      <button class="pin-btn" onclick="press(2)">2</button>
+      <button class="pin-btn" onclick="press(3)">3</button>
+      <button class="pin-btn" onclick="press(4)">4</button>
+      <button class="pin-btn" onclick="press(5)">5</button>
+      <button class="pin-btn" onclick="press(6)">6</button>
+      <button class="pin-btn" onclick="press(7)">7</button>
+      <button class="pin-btn" onclick="press(8)">8</button>
+      <button class="pin-btn" onclick="press(9)">9</button>
+      <button class="pin-btn" onclick="press('C')">⌫</button>
+      <button class="pin-btn" onclick="press(0)">0</button>
+      <button class="pin-btn" onclick="checkPin()">✔</button>
+    </div>
 
-          <!-- row 1 -->
-          <button class="pin-btn pin-num num" data-num="1">1</button>
-          <button class="pin-btn pin-num num" data-num="2">2</button>
-          <button class="pin-btn pin-num num" data-num="3">3</button>
-
-          <!-- row 2 -->
-          <button class="pin-btn pin-num num" data-num="4">4</button>
-          <button class="pin-btn pin-num num" data-num="5">5</button>
-          <button class="pin-btn pin-num num" data-num="6">6</button>
-
-          <!-- row 3 -->
-          <button class="pin-btn pin-num num" data-num="7">7</button>
-          <button class="pin-btn pin-num num" data-num="8">8</button>
-          <button class="pin-btn pin-num num" data-num="9">9</button>
-
-          <!-- bottom row: decorative symbol, 0, symbol -->
-          <button class="pin-btn pin-symbol" aria-hidden="true">❀</button>
-          <button class="pin-btn pin-num num" data-num="0">0</button>
-          <button class="pin-btn pin-symbol" aria-hidden="true">♡</button>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- SCREEN 2: Tap heart mini-game -->
-    <section id="screen2" class="screen" aria-label="tap heart mini game">
-      <div>
-        <div class="title">Mini Game — Tap the heart</div>
-        <div class="subtitle">Tap the heart 3 times to keep going 💗</div>
-        <h1 id="heart" style="font-size:66px; cursor:pointer; user-select:none;">💗</h1>
-        <div id="tapCount" style="font-weight:700;color:var(--accent);margin-top:8px">Taps: 0/3</div>
-      </div>
-    </section>
-
-    <!-- SCREEN 3: Chapter 1 -->
-    <section id="screen3" class="screen" aria-label="chapter 1">
-      <div class="chapter-card">
-        <h2>Chapter 1: How It All Began 💗</h2>
-        <p>
-Some friendships start normally… but ours? Bilkul normal nahi tha.
-You entered my life in full chaos mode with that <i>“I’m always right”</i> attitude.
-
-And still, I kept you. Kyu? Mujhe bhi nahi pata. 😭💗
-
-But honestly, that first moment was special — even though you were already being a little dramatic.
-        </p>
-
-        <div class="controls">
-          <button class="btn" onclick="next(4)">Next</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCREEN 4: Chapter 2 -->
-    <section id="screen4" class="screen" aria-label="chapter 2">
-      <div class="chapter-card">
-        <h2>Chapter 2: The Memories ✨</h2>
-        <p>
-It’s funny — half our memories are just us roasting each other,
-aur baaki half hum dono ka emotional drama. 😂
-
-Your crazy decisions + my expert advice (jo tum kabhi follow nahi karti)…
-Somehow every moment becomes a core memory.
-        </p>
-
-        <div class="controls">
-          <button class="btn" onclick="next(5)">Next</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCREEN 5: Chapter 3 -->
-    <section id="screen5" class="screen" aria-label="chapter 3">
-      <div class="chapter-card">
-        <h2>Chapter 3: Why You Matter 🎀</h2>
-        <p>
-Okay listen —
-I tease you, I call you dumb (pyar se),
-and I roast you like it’s my full-time job…
-
-But sach kahu? You really are one of the most important people in my life.
-        </p>
-
-        <div class="controls">
-          <button class="btn" onclick="next(6)">Next</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCREEN 6: Chapter 4 -->
-    <section id="screen6" class="screen" aria-label="chapter 4">
-      <div class="chapter-card">
-        <h2>Chapter 4: Today Is For You 🎉</h2>
-        <p>
-Aaj ka din bas tumhare liye —
-your laughter, your drama, your chaotic energy… everything.
-
-Happy Birthday Aashi,
-you deserve every bit of happiness and every surprise today. 💗
-        </p>
-
-        <div class="controls">
-          <button class="btn" onclick="next(7)">Next</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCREEN 7: Chapter 5 (Annoying things but love) -->
-    <section id="screen7" class="screen" aria-label="chapter 5">
-      <div class="chapter-card">
-        <h2>Chapter 5: The Things You Do That Drive Me Crazy 😂💗</h2>
-        <p>
-Some days you make me question my entire life.
-Like seriously — the way you send 50 messages in a row, or how you take
-3 hours to reply and then suddenly call me like nothing happened.
-
-The way you argue confidently even when you’re 100% wrong,
-your dramatic reactions, your “I know everything” attitude,
-your mood swings that change faster than my Wi-Fi signals…
-and don’t even get me started on your overthinking mode.
-
-But here’s the funny part — even when you annoy me to my absolute limit…
-you’re still my favourite person.
-
-Because none of these things change the fact that you make my days brighter,
-make my worst moments lighter,
-and make my life… more you.
-And honestly? I wouldn’t want it any other way. 💞
-        </p>
-
-        <div class="controls">
-          <button class="btn" onclick="next(8)">Final Surprise</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCREEN 8: Final celebration -->
-    <section id="screen8" class="screen" aria-label="final surprise">
-      <div class="final">
-        <h2 style="color:var(--accent); margin:0;">🎉 HAPPY BIRTHDAY AASHI 🎉</h2>
-        <p style="max-width:720px; margin:4px 0 12px 0; color:#5a0030;">
-          Aashi — you are loud, brilliant, messy and perfect. This little digital book
-          is a tiny reminder that you are loved beyond measure. — Ishaan 💗
-        </p>
-
-        <div style="display:flex; gap:10px;">
-          <button class="btn" onclick="downloadSnapshot()">Save this memory</button>
-          <button class="muted-btn" onclick="location.reload()">Restart</button>
-        </div>
-      </div>
-
-      <!-- small confetti hearts animation container (JS will create shapes) -->
-      <div class="confetti" id="confetti"></div>
-    </section>
-
+    <p id="alert" style="color:red; display:none; margin-top:10px;">
+      Wrong password 😭
+    </p>
   </div>
 
   <script>
-    /* ---------- PIN keypad logic ---------- */
-    const correctPin = "3011";
-    let typed = "";
-    const display = document.getElementById("pinDisplay");
+    let password = "";
+    let correct = "3011";
 
-    // show dot mask: we show • for each digit
-    function refreshDisplay() {
-      display.textContent = typed.replace(/./g,"•");
+    function press(n) {
+      if (n === "C") {
+        password = password.slice(0, -1);
+      } else {
+        if (password.length < 4) password += n;
+      }
+      document.getElementById("typedPin").innerText = "*".repeat(password.length);
     }
 
-    // attach listeners to number buttons
-    document.querySelectorAll(".num").forEach(btn=>{
-      btn.addEventListener("click", ()=> {
-        if (typed.length < 4) {
-          typed += btn.getAttribute("data-num");
-          refreshDisplay();
-          if (typed.length === 4) {
-            // small delay to show user entry
-            setTimeout(()=> {
-              if (typed === correctPin) {
-                // go to game
-                typed = "";
-                refreshDisplay();
-                next(2);
-              } else {
-                // wrong effect
-                display.textContent = "✖";
-                display.style.color = "#ff4f8b";
-                setTimeout(()=> {
-                  typed = "";
-                  display.style.color = "var(--accent)";
-                  refreshDisplay();
-                },800);
-              }
-            },260);
-          }
-        }
-      });
-    });
+    function checkPin() {
+      if (password === correct) {
+        next(2);
+      } else {
+        document.getElementById("alert").style.display = "block";
+        password = "";
+        document.getElementById("typedPin").innerText = "";
+      }
+    }
+  </script>
 
-    /* ---------- heart-tap mini game ---------- */
+  <!-- Screen 2: Mini Game -->
+  <div id="screen2" class="screen">
+    <h2>Mini Game 🎮</h2>
+    <p>Tap the heart 3 times to continue 💗</p>
+    <h1 id="heart" style="font-size:70px; cursor:pointer;">💗</h1>
+    <p id="tapCount">Taps: 0/3</p>
+  </div>
+
+  <script>
     let taps = 0;
     const heart = document.getElementById("heart");
-    const tapCount = document.getElementById("tapCount");
-    heart && heart.addEventListener("click", ()=>{
+
+    heart.onclick = function () {
       taps++;
-      tapCount.innerText = `Taps: ${taps}/3`;
-      if (taps >= 3) {
-        // small celebration then go to chapter1
-        next(3);
-      }
-    });
-
-    /* ---------- navigation helper ---------- */
-    function next(n){
-      // hide all, show requested
-      document.querySelectorAll(".screen").forEach(s=> s.classList.remove("active"));
-      const el = document.getElementById("screen"+n);
-      if(el) el.classList.add("active");
-
-      // when final screen shown, trigger confetti
-      if(n===8) startConfetti();
-    }
-
-    /* ---------- small confetti hearts (final) ---------- */
-    function startConfetti(){
-      const c = document.getElementById("confetti");
-      // create 30 hearts
-      for(let i=0;i<30;i++){
-        const heartEl = document.createElement("div");
-        heartEl.textContent = "💗";
-        heartEl.style.position = "absolute";
-        heartEl.style.left = Math.random()*100 + "%";
-        heartEl.style.top = Math.random()*10 + "%";
-        heartEl.style.fontSize = (12 + Math.random()*28) + "px";
-        heartEl.style.opacity = 0.9;
-        heartEl.style.transform = `translateY(0)`;
-        heartEl.style.transition = `transform ${2+Math.random()*2}s linear, opacity 1.2s ease`;
-        c.appendChild(heartEl);
-        // animate downwards
-        setTimeout(()=> heartEl.style.transform = `translateY(${120+Math.random()*80}vh)`, 50);
-        setTimeout(()=> heartEl.style.opacity = "0", 2200 + Math.random()*400);
-        // remove later
-        setTimeout(()=> heartEl.remove(), 4000 + Math.random()*500);
-      }
-    }
-
-    /* ---------- snapshot download (simple) ---------- */
-    function downloadSnapshot(){
-      // simple approach: save page as pdf/print - fallback to copy link
-      // easiest: copy page url to clipboard + alert
-      navigator.clipboard.writeText(location.href).then(()=> {
-        alert("Link copied to clipboard! You can share it or save the page as PDF from your browser.");
-      }).catch(()=> alert("Copied failed — you can manually save the page."));
-    }
-
-    /* ---------- initialize: ensure screen1 active ---------- */
-    document.querySelectorAll('.screen').forEach(s=> s.classList.remove('active'));
-    document.getElementById('screen1').classList.add('active');
-
-    /* small accessibility: allow keyboard input 0-9 for PIN */
-    document.addEventListener('keydown', (e)=>{
-      if(document.querySelector('#screen1.active')){
-        if(e.key >= '0' && e.key <= '9'){
-          const btn = document.querySelector(`.num[data-num="${e.key}"]`);
-          if(btn) btn.click();
-        } else if(e.key === "Backspace"){
-          // remove last char
-          typed = typed.slice(0,-1);
-          refreshDisplay();
-        }
-      }
-    });
+      document.getElementById("tapCount").innerText = `Taps: ${taps}/3`;
+      if (taps >= 3) next(3);
+    };
   </script>
+
+  <!-- Screen 3: Chapter 1 -->
+  <div id="screen3" class="screen">
+    <div class="chapter-box">
+      <h2>Chapter 1: How It All Began 💗</h2>
+      <p>
+        Some friendships start normally… but ours? Bilkul normal nahi tha.
+        You entered my life with full chaos mode and that “I’m always right” attitude.
+        And still, I kept you. Kyu? Mujhe bhi nahi pata. 😭💗
+        But honestly, that first moment was special — even though you were already being dramatic.
+      </p>
+      <button class="btn" onclick="next(4)">Next</button>
+    </div>
+  </div>
+
+  <!-- Screen 4: Chapter 2 -->
+  <div id="screen4" class="screen">
+    <div class="chapter-box">
+      <h2>Chapter 2: The Memories ✨</h2>
+      <p>
+        Half of our memories are just us roasting each other,
+        aur baaki half hum dono ka emotional drama. 😂
+        Your crazy decisions + my expert advice (jo tum kabhi follow nahi karti)…
+        Somehow every moment becomes a core memory.
+      </p>
+      <button class="btn" onclick="next(5)">Next</button>
+    </div>
+  </div>
+
+  <!-- Screen 5: Chapter 3 -->
+  <div id="screen5" class="screen">
+    <div class="chapter-box">
+      <h2>Chapter 3: Why You Matter 🎀</h2>
+      <p>
+        I tease you, I call you dumb (pyar se), and I roast you like it’s my full-time job…
+        But sach kahu, you really are one of the most important people in my life.
+      </p>
+      <button class="btn" onclick="next(6)">Next</button>
+    </div>
+  </div>
+
+  <!-- Screen 6: Chapter 4 -->
+  <div id="screen6" class="screen">
+    <div class="chapter-box">
+      <h2>Chapter 4: Today Is For You 🎉</h2>
+      <p>
+        Aaj ka din bas tumhare liye —  
+        your laughter, your drama, your chaotic energy… everything.  
+        Happy Birthday Aashi,  
+        you deserve every bit of happiness and every surprise today. 💗
+      </p>
+      <button class="btn" onclick="next(7)">Next</button>
+    </div>
+  </div>
+
+  <!-- Screen 7: Chapter 5 -->
+  <div id="screen7" class="screen">
+    <div class="chapter-box">
+      <h2>Chapter 5: The Things You Do That Drive Me Crazy 😭❤️✨</h2>
+      <p>
+        Some days you make me question my entire life.  
+        Like seriously — the way you send 50 messages in a row, or how you take
+        3 hours to reply and then suddenly call me like nothing happened.  
+        <br><br>
+        The way you argue confidently even when you’re 100% wrong,  
+        your dramatic reactions, your “I know everything” attitude,  
+        your mood swings faster than my Wi-Fi signals…  
+        and don’t even get me started on your overthinking mode.  
+        <br><br>
+        But here’s the funny part — even when you annoy me to my absolute limit…  
+        you’re still my favourite person.  
+        <br><br>
+        Because none of these things change the fact that you make my days brighter,  
+        make my worst moments lighter,  
+        and make my life… more you.  
+        And honestly? I wouldn’t want it any other way. 💞✨
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function next(n) {
+      document.querySelectorAll('.screen')
+        .forEach(s => s.classList.remove('active'));
+      document.getElementById('screen' + n)
+        .classList.add('active');
+    }
+  </script>
+
 </body>
 </html>
