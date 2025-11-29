@@ -1,209 +1,413 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Birthday Surprise for Aashi</title>
-<style>
-  body {
-    font-family: 'Comic Sans MS', cursive;
-    background: linear-gradient(to bottom, #ffd1dc, #ffe0ac);
-    text-align: center;
-    overflow-x: hidden;
-  }
-  h1, h2 {
-    color: #ff3366;
-  }
-  .hidden { display: none; }
-  button {
-    padding: 12px 20px;
-    background: #ff88bb;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    margin-top: 15px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  button:hover { transform: scale(1.1); }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday Aashi 🎀</title>
+  <style>
+    :root{
+      --bg-1:#fff0f6;
+      --pink-1:#ffb6e6;
+      --pink-2:#ff8ac9;
+      --accent:#ff4fa3;
+      --muted:#6a0040;
+      --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "Poppins", system-ui, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #fff6fb 0%, #ffeef9 100%);
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
 
-  /* Hearts */
-  .heart {
-    width: 60px;
-    height: 60px;
-    background: url('https://i.ibb.co/fMTF5pH/heart.png') center/contain no-repeat;
-    display: inline-block;
-    margin: 10px;
-    cursor: grab;
-  }
+    /* Layout */
+    .stage {
+      width:100%;
+      max-width:900px;
+      min-height:560px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,240,250,0.95));
+      border-radius:20px;
+      box-shadow:0 20px 60px rgba(255,80,170,0.12);
+      overflow:hidden;
+      position:relative;
+      padding:30px;
+    }
 
-  #basket {
-    width: 120px;
-    height: 120px;
-    margin: 20px auto;
-    background: url('https://i.ibb.co/xjD7h3V/basket.png') center/contain no-repeat;
-  }
+    .screen { display:none; width:100%; height:100%; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:18px; }
+    .screen.active { display:flex; }
 
-  /* Reduced confetti */
-  .confetti {
-    position: fixed;
-    width: 10px; height: 10px;
-    animation: fall 2.5s linear forwards;
-    opacity: 0.8;
-  }
+    /* Title area */
+    .title {
+      font-size:20px;
+      font-weight:700;
+      color:var(--accent);
+      margin-bottom:8px;
+      letter-spacing:0.2px;
+    }
+    .subtitle { font-size:13px; color:#9b3a66; margin-bottom:18px; }
 
-  @keyframes fall {
-    0% { transform: translateY(-40px) rotate(0deg); }
-    100% { transform: translateY(100vh) rotate(180deg); opacity: 0; }
-  }
-</style>
+    /* PIN keypad */
+    .pin-wrap { display:flex; flex-direction:column; align-items:center; gap:18px; }
+    .pin-display {
+      width:210px; height:46px; border-radius:12px; background:#ffd9ec;
+      display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--accent); letter-spacing:8px;
+      box-shadow: inset 0 -6px 14px rgba(255,100,170,0.06);
+    }
+    .pin-grid {
+      margin-top:6px;
+      width:100%;
+      display:grid;
+      grid-template-columns:repeat(3,80px);
+      grid-auto-rows:80px;
+      gap:12px;
+      justify-content:center;
+    }
+    .pin-btn {
+      border-radius:22px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      font-size:22px;
+      box-shadow:0 8px 20px rgba(255,80,150,0.08);
+      transition:transform .12s ease, box-shadow .12s;
+      color:white;
+    }
+    .pin-btn:active{ transform:scale(.96) }
+
+    .pin-num { background: linear-gradient(180deg,var(--pink-1),var(--pink-2)); }
+    .pin-symbol { background: linear-gradient(180deg,#ffd6ea,#ffeff8); color: var(--accent); font-size:22px; }
+
+    /* chapter card */
+    .chapter-card {
+      width:100%;
+      max-width:760px;
+      background:var(--card);
+      padding:26px;
+      border-radius:16px;
+      box-shadow:0 18px 40px rgba(255,80,170,0.06);
+      text-align:left;
+    }
+    .chapter-card h2{ margin:0 0 10px 0; color:var(--accent); font-size:22px }
+    .chapter-card p{ margin:0; line-height:1.6; font-size:16px; color:#3a0029; white-space:pre-line }
+
+    .controls { margin-top:18px; display:flex; gap:12px; justify-content:center; }
+    .btn { background:var(--accent); color:white; border:none; padding:10px 16px; border-radius:12px; cursor:pointer; font-weight:700; }
+    .muted-btn { background:#fff; border: 1px solid #ffd3ea; color:var(--accent); }
+
+    /* final screen */
+    .final {
+      display:flex; flex-direction:column; align-items:center; gap:14px;
+    }
+    .confetti{
+      position:absolute; inset:0; pointer-events:none;
+    }
+
+    /* responsiveness */
+    @media (max-width:520px){
+      .pin-grid{ grid-template-columns:repeat(3,64px); grid-auto-rows:64px; gap:10px;}
+      .pin-btn{ border-radius:18px; font-size:20px }
+      .pin-display{ width:160px; letter-spacing:6px }
+      .stage{ padding:18px }
+      .chapter-card{ padding:18px }
+    }
+  </style>
 </head>
 <body>
+  <div class="stage" role="main">
 
-<h1 id="intro">Hey Aashi! 🎉 I have a surprise for you!</h1>
-<button id="startBtn">Start the Surprise</button>
+    <!-- SCREEN 1: PIN keypad -->
+    <section id="screen1" class="screen active" aria-label="Enter password screen">
+      <div class="title">Enter Password</div>
+      <div class="subtitle">This little surprise is just for Aashi — enter password to continue</div>
 
-<div id="story" class="hidden">
-  <h2>Drag a gift into the basket 🎁</h2>
-  <div id="gift1" class="heart" draggable="true"></div>
-  <div id="gift2" class="heart" draggable="true"></div>
-  <div id="gift3" class="heart" draggable="true"></div>
-  <div id="basket"></div>
-</div>
+      <div class="pin-wrap" role="group" aria-label="pin keypad">
+        <div id="pinDisplay" class="pin-display" aria-live="polite" aria-atomic="true"></div>
 
-<div id="message" class="hidden">
-  <h2 id="msgText"></h2>
-  <button id="nextBtn">Next</button>
-</div>
+        <div class="pin-grid" id="pinGrid">
+          <!-- top symbols -->
+          <button class="pin-btn pin-symbol" aria-hidden="true">☆</button>
+          <button class="pin-btn pin-symbol" aria-hidden="true">♡</button>
+          <button class="pin-btn pin-symbol" aria-hidden="true">✿</button>
 
-<div id="quiz" class="hidden">
-  <h2>Guess the emoji: 🎂</h2>
-  <button onclick="finish(true)">Cake</button>
-  <button onclick="finish(false)">Mango</button>
-  <button onclick="finish(false)">Orange</button>
-</div>
+          <!-- row 1 -->
+          <button class="pin-btn pin-num num" data-num="1">1</button>
+          <button class="pin-btn pin-num num" data-num="2">2</button>
+          <button class="pin-btn pin-num num" data-num="3">3</button>
 
-<div id="final" class="hidden">
-  <h1>🎆 Happy Birthday, Aashi! 🎆</h1>
-  <h2>You make the world brighter! 💖</h2>
-</div>
+          <!-- row 2 -->
+          <button class="pin-btn pin-num num" data-num="4">4</button>
+          <button class="pin-btn pin-num num" data-num="5">5</button>
+          <button class="pin-btn pin-num num" data-num="6">6</button>
 
-<audio id="clickSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
-<audio id="successSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
-<audio id="finalSound" src="https://www.soundjay.com/misc/sounds/fanfare-01.mp3"></audio>
+          <!-- row 3 -->
+          <button class="pin-btn pin-num num" data-num="7">7</button>
+          <button class="pin-btn pin-num num" data-num="8">8</button>
+          <button class="pin-btn pin-num num" data-num="9">9</button>
 
-<script>
-const startBtn = document.getElementById('startBtn');
-const story = document.getElementById('story');
-const messageDiv = document.getElementById('message');
-const msgText = document.getElementById('msgText');
-const nextBtn = document.getElementById('nextBtn');
-const quiz = document.getElementById('quiz');
-const final = document.getElementById('final');
+          <!-- bottom row: decorative symbol, 0, symbol -->
+          <button class="pin-btn pin-symbol" aria-hidden="true">❀</button>
+          <button class="pin-btn pin-num num" data-num="0">0</button>
+          <button class="pin-btn pin-symbol" aria-hidden="true">♡</button>
+        </div>
+      </div>
 
-startBtn.onclick = () => {
-  document.getElementById('clickSound').play();
-  startBtn.style.display = 'none';
-  story.classList.remove('hidden');
-  createConfetti(5); // reduced for speed
-}
+    </section>
 
-// Drag + Drop
-const gifts = document.querySelectorAll('.heart');
-const basket = document.getElementById('basket');
+    <!-- SCREEN 2: Tap heart mini-game -->
+    <section id="screen2" class="screen" aria-label="tap heart mini game">
+      <div>
+        <div class="title">Mini Game — Tap the heart</div>
+        <div class="subtitle">Tap the heart 3 times to keep going 💗</div>
+        <h1 id="heart" style="font-size:66px; cursor:pointer; user-select:none;">💗</h1>
+        <div id="tapCount" style="font-weight:700;color:var(--accent);margin-top:8px">Taps: 0/3</div>
+      </div>
+    </section>
 
-gifts.forEach(g => {
-  g.addEventListener('dragstart', e => e.dataTransfer.setData('id', e.target.id));
-});
+    <!-- SCREEN 3: Chapter 1 -->
+    <section id="screen3" class="screen" aria-label="chapter 1">
+      <div class="chapter-card">
+        <h2>Chapter 1: How It All Began 💗</h2>
+        <p>
+Some friendships start normally… but ours? Bilkul normal nahi tha.
+You entered my life in full chaos mode with that <i>“I’m always right”</i> attitude.
 
-basket.addEventListener('dragover', e => e.preventDefault());
-basket.addEventListener('drop', e => {
-  e.preventDefault();
-  const id = e.dataTransfer.getData('id');
-  document.getElementById(id).style.display = 'none';
-  document.getElementById('successSound').play();
+And still, I kept you. Kyu? Mujhe bhi nahi pata. 😭💗
 
-  story.classList.add('hidden');
-  messageDiv.classList.remove('hidden');
-  msgText.innerText = "You unlocked a surprise, Aashi! 💝";
-});
+But honestly, that first moment was special — even though you were already being a little dramatic.
+        </p>
 
-nextBtn.onclick = () => {
-  quiz.classList.remove('hidden');
-  messageDiv.classList.add('hidden');
-  document.getElementById('clickSound').play();
-}
+        <div class="controls">
+          <button class="btn" onclick="next(4)">Next</button>
+        </div>
+      </div>
+    </section>
 
-function finish(correct){
-  quiz.classList.add('hidden');
-  final.classList.remove('hidden');
-  document.getElementById('finalSound').play();
-}
+    <!-- SCREEN 4: Chapter 2 -->
+    <section id="screen4" class="screen" aria-label="chapter 2">
+      <div class="chapter-card">
+        <h2>Chapter 2: The Memories ✨</h2>
+        <p>
+It’s funny — half our memories are just us roasting each other,
+aur baaki half hum dono ka emotional drama. 😂
 
-// Confetti (lightweight)
-function createConfetti(count){
-  for(let i=0;i<count;i++){
-    const c = document.createElement('div');
-    c.classList.add('confetti');
-    c.style.left = Math.random()*window.innerWidth + 'px';
-    c.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 60%)`;
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(), 2600);
-  }
-}
-</script>
+Your crazy decisions + my expert advice (jo tum kabhi follow nahi karti)…
+Somehow every moment becomes a core memory.
+        </p>
 
-  
-<script>
-// EXTENSION: Add a small balloon‑pop game to increase total time to ~2.5 minutes
+        <div class="controls">
+          <button class="btn" onclick="next(5)">Next</button>
+        </div>
+      </div>
+    </section>
 
-let balloonGameStarted = false;
+    <!-- SCREEN 5: Chapter 3 -->
+    <section id="screen5" class="screen" aria-label="chapter 3">
+      <div class="chapter-card">
+        <h2>Chapter 3: Why You Matter 🎀</h2>
+        <p>
+Okay listen —
+I tease you, I call you dumb (pyar se),
+and I roast you like it’s my full-time job…
 
-function startBalloonGame(){
-  balloonGameStarted = true;
-  const game = document.createElement('div');
-  game.id = 'balloonGame';
-  game.innerHTML = `<h2>Pop 5 balloons! 🎈</h2>`;
-  document.body.appendChild(game);
+But sach kahu? You really are one of the most important people in my life.
+        </p>
 
-  let popped = 0;
+        <div class="controls">
+          <button class="btn" onclick="next(6)">Next</button>
+        </div>
+      </div>
+    </section>
 
-  for(let i=0;i<5;i++){
-    const b = document.createElement('div');
-    b.style.width = '60px';
-    b.style.height = '80px';
-    b.style.borderRadius = '50%';
-    b.style.position = 'absolute';
-    b.style.top = (Math.random()*60+20)+'vh';
-    b.style.left = (Math.random()*80+10)+'vw';
-    b.style.backgroundColor = `hsl(${Math.random()*360}, 80%, 70%)`;
-    b.style.cursor = 'pointer';
-    b.onclick = () => {
-      popped++;
-      b.remove();
-      if(popped===5){
-        document.getElementById('balloonGame').innerHTML += `<h3>Great job, Aashi! 🎉</h3>`;
-        setTimeout(()=>{
-          document.getElementById('balloonGame').remove();
-          final.classList.remove('hidden');
-          document.getElementById('finalSound').play();
-        }, 1500);
+    <!-- SCREEN 6: Chapter 4 -->
+    <section id="screen6" class="screen" aria-label="chapter 4">
+      <div class="chapter-card">
+        <h2>Chapter 4: Today Is For You 🎉</h2>
+        <p>
+Aaj ka din bas tumhare liye —
+your laughter, your drama, your chaotic energy… everything.
+
+Happy Birthday Aashi,
+you deserve every bit of happiness and every surprise today. 💗
+        </p>
+
+        <div class="controls">
+          <button class="btn" onclick="next(7)">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 7: Chapter 5 (Annoying things but love) -->
+    <section id="screen7" class="screen" aria-label="chapter 5">
+      <div class="chapter-card">
+        <h2>Chapter 5: The Things You Do That Drive Me Crazy 😂💗</h2>
+        <p>
+Some days you make me question my entire life.
+Like seriously — the way you send 50 messages in a row, or how you take
+3 hours to reply and then suddenly call me like nothing happened.
+
+The way you argue confidently even when you’re 100% wrong,
+your dramatic reactions, your “I know everything” attitude,
+your mood swings that change faster than my Wi-Fi signals…
+and don’t even get me started on your overthinking mode.
+
+But here’s the funny part — even when you annoy me to my absolute limit…
+you’re still my favourite person.
+
+Because none of these things change the fact that you make my days brighter,
+make my worst moments lighter,
+and make my life… more you.
+And honestly? I wouldn’t want it any other way. 💞
+        </p>
+
+        <div class="controls">
+          <button class="btn" onclick="next(8)">Final Surprise</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 8: Final celebration -->
+    <section id="screen8" class="screen" aria-label="final surprise">
+      <div class="final">
+        <h2 style="color:var(--accent); margin:0;">🎉 HAPPY BIRTHDAY AASHI 🎉</h2>
+        <p style="max-width:720px; margin:4px 0 12px 0; color:#5a0030;">
+          Aashi — you are loud, brilliant, messy and perfect. This little digital book
+          is a tiny reminder that you are loved beyond measure. — Ishaan 💗
+        </p>
+
+        <div style="display:flex; gap:10px;">
+          <button class="btn" onclick="downloadSnapshot()">Save this memory</button>
+          <button class="muted-btn" onclick="location.reload()">Restart</button>
+        </div>
+      </div>
+
+      <!-- small confetti hearts animation container (JS will create shapes) -->
+      <div class="confetti" id="confetti"></div>
+    </section>
+
+  </div>
+
+  <script>
+    /* ---------- PIN keypad logic ---------- */
+    const correctPin = "3011";
+    let typed = "";
+    const display = document.getElementById("pinDisplay");
+
+    // show dot mask: we show • for each digit
+    function refreshDisplay() {
+      display.textContent = typed.replace(/./g,"•");
+    }
+
+    // attach listeners to number buttons
+    document.querySelectorAll(".num").forEach(btn=>{
+      btn.addEventListener("click", ()=> {
+        if (typed.length < 4) {
+          typed += btn.getAttribute("data-num");
+          refreshDisplay();
+          if (typed.length === 4) {
+            // small delay to show user entry
+            setTimeout(()=> {
+              if (typed === correctPin) {
+                // go to game
+                typed = "";
+                refreshDisplay();
+                next(2);
+              } else {
+                // wrong effect
+                display.textContent = "✖";
+                display.style.color = "#ff4f8b";
+                setTimeout(()=> {
+                  typed = "";
+                  display.style.color = "var(--accent)";
+                  refreshDisplay();
+                },800);
+              }
+            },260);
+          }
+        }
+      });
+    });
+
+    /* ---------- heart-tap mini game ---------- */
+    let taps = 0;
+    const heart = document.getElementById("heart");
+    const tapCount = document.getElementById("tapCount");
+    heart && heart.addEventListener("click", ()=>{
+      taps++;
+      tapCount.innerText = `Taps: ${taps}/3`;
+      if (taps >= 3) {
+        // small celebration then go to chapter1
+        next(3);
+      }
+    });
+
+    /* ---------- navigation helper ---------- */
+    function next(n){
+      // hide all, show requested
+      document.querySelectorAll(".screen").forEach(s=> s.classList.remove("active"));
+      const el = document.getElementById("screen"+n);
+      if(el) el.classList.add("active");
+
+      // when final screen shown, trigger confetti
+      if(n===8) startConfetti();
+    }
+
+    /* ---------- small confetti hearts (final) ---------- */
+    function startConfetti(){
+      const c = document.getElementById("confetti");
+      // create 30 hearts
+      for(let i=0;i<30;i++){
+        const heartEl = document.createElement("div");
+        heartEl.textContent = "💗";
+        heartEl.style.position = "absolute";
+        heartEl.style.left = Math.random()*100 + "%";
+        heartEl.style.top = Math.random()*10 + "%";
+        heartEl.style.fontSize = (12 + Math.random()*28) + "px";
+        heartEl.style.opacity = 0.9;
+        heartEl.style.transform = `translateY(0)`;
+        heartEl.style.transition = `transform ${2+Math.random()*2}s linear, opacity 1.2s ease`;
+        c.appendChild(heartEl);
+        // animate downwards
+        setTimeout(()=> heartEl.style.transform = `translateY(${120+Math.random()*80}vh)`, 50);
+        setTimeout(()=> heartEl.style.opacity = "0", 2200 + Math.random()*400);
+        // remove later
+        setTimeout(()=> heartEl.remove(), 4000 + Math.random()*500);
       }
     }
-    game.appendChild(b);
-  }
-}
 
-// MODIFY finish() to start balloon game
-const originalFinish = finish;
-finish = function(correct){
-  quiz.classList.add('hidden');
-  // start balloon pop game instead of final screen
-  startBalloonGame();
-}
-</script>
+    /* ---------- snapshot download (simple) ---------- */
+    function downloadSnapshot(){
+      // simple approach: save page as pdf/print - fallback to copy link
+      // easiest: copy page url to clipboard + alert
+      navigator.clipboard.writeText(location.href).then(()=> {
+        alert("Link copied to clipboard! You can share it or save the page as PDF from your browser.");
+      }).catch(()=> alert("Copied failed — you can manually save the page."));
+    }
 
+    /* ---------- initialize: ensure screen1 active ---------- */
+    document.querySelectorAll('.screen').forEach(s=> s.classList.remove('active'));
+    document.getElementById('screen1').classList.add('active');
+
+    /* small accessibility: allow keyboard input 0-9 for PIN */
+    document.addEventListener('keydown', (e)=>{
+      if(document.querySelector('#screen1.active')){
+        if(e.key >= '0' && e.key <= '9'){
+          const btn = document.querySelector(`.num[data-num="${e.key}"]`);
+          if(btn) btn.click();
+        } else if(e.key === "Backspace"){
+          // remove last char
+          typed = typed.slice(0,-1);
+          refreshDisplay();
+        }
+      }
+    });
+  </script>
 </body>
 </html>
-
